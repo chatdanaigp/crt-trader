@@ -563,106 +563,210 @@ export default function ToolsDocumentation() {
     const renderMobileContent = (id) => {
         switch (id) {
             case 'gss': return (
-                <div className="space-y-4">
-                    {/* Logo */}
-                    <div className="flex justify-center">
+                <div className="space-y-6">
+                    {/* Logo & Description */}
+                    <div className="flex flex-col items-center text-center">
                         <img
                             src="/images/tools/gss-logo.jpg"
                             alt="GSS Logo"
-                            className="w-32 h-auto rounded-xl border border-primary/30"
+                            className="w-full max-w-[200px] h-auto rounded-xl border border-primary/30 shadow-lg shadow-primary/20 mb-4"
                         />
+                        <p className="text-text-secondary leading-relaxed">{t('tools.gss.description')}</p>
                     </div>
-                    <p className="text-text-secondary">{t('tools.gss.description')}</p>
+
                     {/* Example Images */}
-                    <div className="grid grid-cols-3 gap-2">
-                        <img src="/images/tools/gss-example-1.png" alt="GSS Example 1" className="w-full rounded-lg border border-primary/20" />
-                        <img src="/images/tools/gss-example-2.png" alt="GSS Example 2" className="w-full rounded-lg border border-primary/20" />
-                        <img src="/images/tools/gss-example-3.png" alt="GSS Example 3" className="w-full rounded-lg border border-primary/20" />
+                    <div>
+                        <p className="text-white font-semibold mb-3">{t('tools.examples')}:</p>
+                        <div className="space-y-3">
+                            <img src="/images/tools/gss-example-1.png" alt="GSS Example 1" className="w-full rounded-xl border border-primary/20 shadow-md" />
+                            <div className="grid grid-cols-2 gap-3">
+                                <img src="/images/tools/gss-example-2.png" alt="GSS Example 2" className="w-full rounded-xl border border-primary/20" />
+                                <img src="/images/tools/gss-example-3.png" alt="GSS Example 3" className="w-full rounded-xl border border-primary/20" />
+                            </div>
+                        </div>
                     </div>
-                    <div className="bg-primary/10 p-4 rounded-lg">
-                        <p className="text-primary text-sm font-medium mb-1">{t('tools.indicators')}</p>
+
+                    <div className="bg-primary/10 p-5 rounded-xl border border-primary/20">
+                        <p className="text-primary font-bold mb-2 flex items-center gap-2">
+                            <Activity className="w-4 h-4" />
+                            {t('tools.indicators')}
+                        </p>
                         <p className="text-text-secondary text-sm">{t('tools.gss.indicatorsDesc')}</p>
                     </div>
-                    <FeatureCard title={t('tools.gss.borderLines')} description={t('tools.gss.borderLinesDesc')} icon={Layers} color="primary" />
-                    <FeatureCard title={t('tools.gss.signals')} description={t('tools.gss.signalsDesc')} icon={Target} color="accent" />
-                    <FeatureCard title={t('tools.gss.benefit')} description={t('tools.gss.benefitDesc')} icon={Shield} color="primary" />
-                    <div className="bg-green/10 p-4 rounded-lg">
-                        <p className="text-green font-bold text-xl mb-1">57% {t('chart.winRate')}</p>
+
+                    <div className="space-y-3">
+                        <FeatureCard title={t('tools.gss.borderLines')} description={t('tools.gss.borderLinesDesc')} icon={Layers} color="primary" />
+                        <FeatureCard title={t('tools.gss.signals')} description={t('tools.gss.signalsDesc')} icon={Target} color="accent" />
+                        <FeatureCard title={t('tools.gss.benefit')} description={t('tools.gss.benefitDesc')} icon={Shield} color="primary" />
+                    </div>
+
+                    <div className="bg-green/10 p-5 rounded-xl border border-green/20">
+                        <p className="text-green font-bold text-2xl mb-1 flex items-center gap-2">
+                            <CheckCircle2 className="w-6 h-6" />
+                            57%
+                        </p>
+                        <p className="text-white font-medium">{t('tools.gss.winRate')}</p>
                         <p className="text-text-secondary text-sm">{t('tools.gss.winRateDesc')}</p>
                     </div>
-                    <div className="bg-yellow-500/10 p-4 rounded-lg border border-yellow-500/20">
-                        <p className="text-yellow-500 font-medium text-sm">{t('tools.gss.warning')}</p>
+
+                    <div className="bg-yellow-500/10 p-5 rounded-xl border border-yellow-500/20">
+                        <div className="flex items-start gap-3">
+                            <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                            <div>
+                                <p className="text-yellow-500 font-medium mb-1">{t('tools.gss.warning')}</p>
+                                <p className="text-yellow-500/80 text-sm">{t('tools.gss.warningDesc')}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Buy Button */}
+                    <div className="pt-2">
+                        <Link
+                            href="/purchase"
+                            className="w-full inline-flex justify-center items-center gap-2 px-6 py-4 bg-gradient-to-r from-primary via-primary to-accent text-white font-bold rounded-xl shadow-lg shadow-primary/30 hover:scale-[1.02] transition-all"
+                        >
+                            <ShoppingCart className="w-5 h-5" />
+                            {t('tools.buyNow')}
+                        </Link>
                     </div>
                 </div>
             );
             case 'tts': return (
-                <div className="space-y-4">
-                    {/* Logo */}
-                    <div className="flex justify-center">
+                <div className="space-y-6">
+                    {/* Logo & Description */}
+                    <div className="flex flex-col items-center text-center">
                         <img
                             src="/images/tools/tts-logo.jpg"
                             alt="TTS Logo"
-                            className="w-32 h-auto rounded-xl border border-accent/30"
+                            className="w-full max-w-[200px] h-auto rounded-xl border border-accent/30 shadow-lg shadow-accent/20 mb-4"
                         />
+                        <p className="text-text-secondary leading-relaxed">{t('tools.tts.description')}</p>
+                        <div className="inline-block mt-3 px-4 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium">
+                            Smart Money Concept (SMC)
+                        </div>
                     </div>
-                    <p className="text-text-secondary">{t('tools.tts.description')}</p>
+
                     {/* Example Images */}
-                    <div className="grid grid-cols-3 gap-2">
-                        <img src="/images/tools/tts-example-1.png" alt="TTS Example 1" className="w-full rounded-lg border border-accent/20" />
-                        <img src="/images/tools/tts-example-2.png" alt="TTS Example 2" className="w-full rounded-lg border border-accent/20" />
-                        <img src="/images/tools/tts-example-3.png" alt="TTS Example 3" className="w-full rounded-lg border border-accent/20" />
+                    <div>
+                        <p className="text-white font-semibold mb-3">{t('tools.examples')}:</p>
+                        <div className="space-y-3">
+                            <img src="/images/tools/tts-example-1.png" alt="TTS Example 1" className="w-full rounded-xl border border-accent/20 shadow-md" />
+                            <div className="grid grid-cols-2 gap-3">
+                                <img src="/images/tools/tts-example-2.png" alt="TTS Example 2" className="w-full rounded-xl border border-accent/20" />
+                                <img src="/images/tools/tts-example-3.png" alt="TTS Example 3" className="w-full rounded-xl border border-accent/20" />
+                            </div>
+                        </div>
                     </div>
-                    <FeatureCard title={t('tools.tts.tunnelLine')} description={t('tools.tts.tunnelLineDesc')} icon={Activity} color="accent" />
-                    <FeatureCard title={t('tools.tts.structure')} description={t('tools.tts.structureDesc')} icon={Layers} color="primary" />
-                    <FeatureCard title={t('tools.tts.rule')} description={t('tools.tts.ruleDesc')} icon={Target} color="accent" />
+
+                    <div className="space-y-3">
+                        <FeatureCard title={t('tools.tts.tunnelLine')} description={t('tools.tts.tunnelLineDesc')} icon={Activity} color="accent" />
+                        <FeatureCard title={t('tools.tts.structure')} description={t('tools.tts.structureDesc')} icon={Layers} color="primary" />
+                        <FeatureCard title={t('tools.tts.rule')} description={t('tools.tts.ruleDesc')} icon={Target} color="accent" />
+                    </div>
+
                     <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-accent/10 p-3 rounded-lg text-center">
-                            <p className="text-accent text-xs">Timeframe</p>
-                            <p className="text-white font-bold">M5</p>
+                        <div className="bg-accent/10 p-4 rounded-xl text-center border border-accent/20">
+                            <p className="text-accent text-sm mb-1">{t('tools.tts.timeframe')}</p>
+                            <p className="text-white font-bold text-lg">M5</p>
                         </div>
-                        <div className="bg-primary/10 p-3 rounded-lg text-center">
-                            <p className="text-primary text-xs">RR</p>
-                            <p className="text-white font-bold">1:2</p>
+                        <div className="bg-primary/10 p-4 rounded-xl text-center border border-primary/20">
+                            <p className="text-primary text-sm mb-1">Risk:Reward</p>
+                            <p className="text-white font-bold text-lg">1:2</p>
                         </div>
                     </div>
-                    <div className="bg-green/10 p-4 rounded-lg">
-                        <p className="text-green font-bold text-xl mb-1">83.33% {t('chart.winRate')}</p>
+
+                    <div className="bg-green/10 p-5 rounded-xl border border-green/20">
+                        <p className="text-green font-bold text-2xl mb-1 flex items-center gap-2">
+                            <CheckCircle2 className="w-6 h-6" />
+                            83.33%
+                        </p>
+                        <p className="text-white font-medium">{t('tools.tts.winRate')}</p>
                         <p className="text-text-secondary text-sm">{t('tools.tts.winRateDesc')}</p>
                     </div>
-                    <div className="bg-yellow-500/10 p-4 rounded-lg border border-yellow-500/20">
-                        <p className="text-yellow-500 font-medium text-sm">{t('tools.tts.warning')}</p>
+
+                    <div className="bg-yellow-500/10 p-5 rounded-xl border border-yellow-500/20">
+                        <div className="flex items-start gap-3">
+                            <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                            <div>
+                                <p className="text-yellow-500 font-medium mb-1">{t('tools.tts.warning')}</p>
+                                <p className="text-yellow-500/80 text-sm">{t('tools.tts.warningDesc')}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Buy Button */}
+                    <div className="pt-2">
+                        <Link
+                            href="/purchase"
+                            className="w-full inline-flex justify-center items-center gap-2 px-6 py-4 bg-gradient-to-r from-accent via-accent to-primary text-white font-bold rounded-xl shadow-lg shadow-accent/30 hover:scale-[1.02] transition-all"
+                        >
+                            <ShoppingCart className="w-5 h-5" />
+                            {t('tools.buyNow')}
+                        </Link>
                     </div>
                 </div>
             );
             case 'dzv': return (
-                <div className="space-y-4">
-                    <p className="text-text-secondary">{t('tools.dzv.description')}</p>
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-2 p-3 bg-blue-500/10 rounded-lg">
-                            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                            <span className="text-blue-400 text-sm">{t('tools.dzv.zone1')}: Sideway</span>
+                <div className="space-y-6">
+                    <p className="text-text-secondary leading-relaxed">{t('tools.dzv.description')}</p>
+
+                    <div className="space-y-3">
+                        <p className="text-white font-semibold">{t('tools.dzv.zones')}:</p>
+                        <div className="flex items-center gap-3 p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                            <div className="w-4 h-4 rounded-full bg-blue-500 shadow shadow-blue-500/50"></div>
+                            <div>
+                                <span className="text-blue-400 font-bold block">{t('tools.dzv.zone1')}</span>
+                                <span className="text-text-secondary text-sm">Sideway Market</span>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 p-3 bg-green/10 rounded-lg">
-                            <div className="w-3 h-3 rounded-full bg-green"></div>
-                            <span className="text-green text-sm">{t('tools.dzv.zone2')}: Trend Trading</span>
+                        <div className="flex items-center gap-3 p-4 bg-green/10 rounded-xl border border-green/20">
+                            <div className="w-4 h-4 rounded-full bg-green shadow shadow-green/50"></div>
+                            <div>
+                                <span className="text-green font-bold block">{t('tools.dzv.zone2')}</span>
+                                <span className="text-text-secondary text-sm">Trend Trading</span>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 p-3 bg-red-500/10 rounded-lg">
-                            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                            <span className="text-red-400 text-sm">{t('tools.dzv.zone3')}: News/CPI</span>
+                        <div className="flex items-center gap-3 p-4 bg-red-500/10 rounded-xl border border-red-500/20">
+                            <div className="w-4 h-4 rounded-full bg-red-500 shadow shadow-red-500/50"></div>
+                            <div>
+                                <span className="text-red-400 font-bold block">{t('tools.dzv.zone3')}</span>
+                                <span className="text-text-secondary text-sm">News / High Volatility</span>
+                            </div>
                         </div>
                     </div>
+
                     <FeatureCard title={t('tools.dzv.dashboard')} description={t('tools.dzv.dashboardDesc')} icon={Gauge} color="accent" />
+
                     <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-accent/10 p-3 rounded-lg text-center">
-                            <p className="text-accent text-xs">{t('tools.dzv.aggressive')}</p>
+                        <div className="bg-accent/10 p-4 rounded-xl text-center border border-accent/20">
+                            <Zap className="w-5 h-5 text-accent mx-auto mb-2" />
+                            <p className="text-accent text-sm font-semibold">{t('tools.dzv.aggressive')}</p>
                         </div>
-                        <div className="bg-primary/10 p-3 rounded-lg text-center">
-                            <p className="text-primary text-xs">{t('tools.dzv.conservative')}</p>
+                        <div className="bg-primary/10 p-4 rounded-xl text-center border border-primary/20">
+                            <Shield className="w-5 h-5 text-primary mx-auto mb-2" />
+                            <p className="text-primary text-sm font-semibold">{t('tools.dzv.conservative')}</p>
                         </div>
                     </div>
-                    <div className="bg-primary/10 p-4 rounded-lg">
-                        <p className="text-primary font-medium text-sm">{t('tools.dzv.dailyReset')}</p>
-                        <p className="text-text-secondary text-xs mt-1">{t('tools.dzv.dailyResetDesc')}</p>
+
+                    <div className="bg-primary/10 p-5 rounded-xl border border-primary/20">
+                        <div className="flex items-start gap-3">
+                            <Clock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <div>
+                                <p className="text-primary font-bold mb-1">{t('tools.dzv.dailyReset')}</p>
+                                <p className="text-text-secondary text-sm">{t('tools.dzv.dailyResetDesc')}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Buy Button */}
+                    <div className="pt-2">
+                        <Link
+                            href="/purchase"
+                            className="w-full inline-flex justify-center items-center gap-2 px-6 py-4 bg-gradient-to-r from-primary to-accent text-white font-bold rounded-xl shadow-lg shadow-primary/30 hover:scale-[1.02] transition-all"
+                        >
+                            <ShoppingCart className="w-5 h-5" />
+                            {t('tools.buyNow')}
+                        </Link>
                     </div>
                 </div>
             );
