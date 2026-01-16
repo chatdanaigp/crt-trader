@@ -2,6 +2,7 @@
 
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
+import PartnersSection from '@/components/PartnersSection';
 import PerformanceChart from '@/components/PerformanceChart';
 import AboutSection from '@/components/AboutSection';
 import FreeVideosPreview from '@/components/FreeVideosPreview';
@@ -12,6 +13,7 @@ export default function Home() {
     <main className="min-h-screen bg-background text-foreground">
       <Navbar />
       <HeroSection />
+      <PartnersSection />
       <PerformanceChart />
       <AboutSection />
       <FreeVideosPreview />
