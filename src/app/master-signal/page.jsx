@@ -94,7 +94,7 @@ export default function MasterSignalPage() {
                     <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                         {/* Back Button */}
                         <Link
-                            href="/contact"
+                            href="/join"
                             className="inline-flex items-center gap-2 text-text-secondary hover:text-primary transition-colors mb-8"
                         >
                             <ArrowLeft className="w-4 h-4" />

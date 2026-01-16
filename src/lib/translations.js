@@ -20,6 +20,7 @@ export const translations = {
         subheadline: { en: 'Professional Affiliate Trading & Community', th: 'ชุมชนเทรดเดอร์และพันธมิตรมืออาชีพ' },
         subheadlineDesc: { en: 'Join our exclusive network of successful gold traders', th: 'ร่วมเป็นส่วนหนึ่งของเครือข่ายเทรดเดอร์ทองคำที่ประสบความสำเร็จ' },
         cta: { en: 'Join Community', th: 'เข้าร่วมชุมชน' },
+        buyTools: { en: 'Buy Tools', th: 'ซื้อเครื่องมือ' },
         members: { en: 'Active Members', th: 'สมาชิกที่ใช้งาน' },
         analysis: { en: 'Expert Analysis', th: 'การวิเคราะห์จากผู้เชี่ยวชาญ' },
         support: { en: '24/7 Support', th: 'ซัพพอร์ต 24/7' },

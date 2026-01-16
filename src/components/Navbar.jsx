@@ -71,7 +71,7 @@ export default function Navbar() {
                         </button>
 
                         <Link
-                            href="/contact"
+                            href="/join"
                             className="px-6 py-2.5 bg-gradient-to-r from-primary-dark via-primary to-accent text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 hover:scale-105"
                         >
                             {t('nav.joinCommunity')}
@@ -115,7 +115,7 @@ export default function Navbar() {
                             </Link>
                         ))}
                         <Link
-                            href="/contact"
+                            href="/join"
                             onClick={() => setIsOpen(false)}
                             className="block text-center px-6 py-3 bg-gradient-to-r from-primary-dark via-primary to-accent text-white font-semibold rounded-lg"
                         >
