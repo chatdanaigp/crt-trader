@@ -3,6 +3,13 @@
 import { Youtube } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
+// TikTok icon component
+const TikTokIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
+    </svg>
+);
+
 export default function PartnersSection() {
     const { t } = useLanguage();
 
@@ -10,52 +17,98 @@ export default function PartnersSection() {
         {
             name: 'Tong Wealthiness',
             logo: '/images/partners/tong.jpg',
-            url: 'https://www.youtube.com/@tongwealthiness'
+            url: 'https://www.youtube.com/@tongwealthiness',
+            platform: 'youtube'
         },
         {
             name: 'Pok Innovest',
             logo: '/images/partners/pok.jpg',
-            url: 'https://www.youtube.com/@Pokinnovest'
+            url: 'https://www.youtube.com/@Pokinnovest',
+            platform: 'youtube'
         },
         {
             name: 'Better Primetime',
             logo: '/images/partners/better.jpg',
-            url: 'https://www.youtube.com/@BetterPrimetime'
+            url: 'https://www.youtube.com/@BetterPrimetime',
+            platform: 'youtube'
         },
         {
             name: 'KNIGHTZME',
             logo: '/images/partners/knightz.jpg',
-            url: 'https://www.youtube.com/@KNIGHTZME'
+            url: 'https://www.youtube.com/@KNIGHTZME',
+            platform: 'youtube'
         },
         {
             name: 'Phonetradingzone',
             logo: '/images/partners/phone.jpg',
-            url: 'https://www.youtube.com/@phonetradingzone'
+            url: 'https://www.youtube.com/@phonetradingzone',
+            platform: 'youtube'
         },
         {
             name: 'Max Investra',
             logo: '/images/partners/max.jpg',
-            url: 'https://www.youtube.com/@MaxInvestra'
+            url: 'https://www.youtube.com/@MaxInvestra',
+            platform: 'youtube'
         },
         {
             name: 'Touch The Profit Room',
             logo: '/images/partners/touch.jpg',
-            url: 'https://www.youtube.com/@Touch_TheProfitRoom'
+            url: 'https://www.youtube.com/@Touch_TheProfitRoom',
+            platform: 'youtube'
         },
         {
             name: 'Rit Mindset',
             logo: '/images/partners/rit.jpg',
-            url: 'https://www.youtube.com/@RitmindsetWN-b7z'
+            url: 'https://www.youtube.com/@RitmindsetWN-b7z',
+            platform: 'youtube'
         },
         {
             name: 'Gold Mastery 168',
             logo: '/images/partners/gold.jpg',
-            url: 'https://www.youtube.com/@GoldMastery168'
+            url: 'https://www.youtube.com/@GoldMastery168',
+            platform: 'youtube'
         },
         {
             name: 'Art Go for Gold',
             logo: '/images/partners/art.jpg',
-            url: 'https://www.youtube.com/@Art-GoforGold43'
+            url: 'https://www.youtube.com/@Art-GoforGold43',
+            platform: 'youtube'
+        },
+        {
+            name: 'BB Wealthiness',
+            logo: '/images/partners/bb.jpg',
+            url: 'https://www.youtube.com/@BBwealthiness/shorts',
+            platform: 'youtube'
+        },
+        {
+            name: 'Boss Wealthiness',
+            logo: '/images/partners/boss.jpg',
+            url: 'https://www.youtube.com/@bosswealthiness',
+            platform: 'youtube'
+        },
+        {
+            name: 'ProWin Trader WN',
+            logo: '/images/partners/prowin.jpg',
+            url: 'https://www.youtube.com/@ProWinTraderWN',
+            platform: 'youtube'
+        },
+        {
+            name: 'Start Signal',
+            logo: '/images/partners/start.jpg',
+            url: 'https://www.youtube.com/@StartSignal',
+            platform: 'youtube'
+        },
+        {
+            name: 'Yai Tuaraay Minilady',
+            logo: '/images/partners/yai.jpg',
+            url: 'https://www.tiktok.com/@yaituaraay_minilady',
+            platform: 'tiktok'
+        },
+        {
+            name: 'Wealthiness WN',
+            logo: '/images/partners/wealthiness.jpg',
+            url: 'https://www.tiktok.com/@.wealthiness.wn',
+            platform: 'tiktok'
         }
     ];
 
@@ -80,7 +133,7 @@ export default function PartnersSection() {
                     animation-play-state: paused;
                 }
             `}</style>
-            
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Title - Centered on top */}
                 <div className="flex items-center justify-center gap-3 mb-8">
@@ -117,9 +170,13 @@ export default function PartnersSection() {
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>
-                                        {/* Youtube Icon Badge */}
-                                        <div className="absolute -bottom-1 -right-1 bg-red-600 rounded-full p-1 shadow-md ring-2 ring-black/50">
-                                            <Youtube className="w-3 h-3 text-white fill-current" />
+                                        {/* Platform Icon Badge */}
+                                        <div className={`absolute -bottom-1 -right-1 rounded-full p-1 shadow-md ring-2 ring-black/50 ${partner.platform === 'tiktok' ? 'bg-black' : 'bg-red-600'}`}>
+                                            {partner.platform === 'tiktok' ? (
+                                                <TikTokIcon className="w-3 h-3 text-white" />
+                                            ) : (
+                                                <Youtube className="w-3 h-3 text-white fill-current" />
+                                            )}
                                         </div>
                                     </div>
 
