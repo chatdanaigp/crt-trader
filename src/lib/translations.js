@@ -6,10 +6,12 @@ export const translations = {
     nav: {
         home: { en: 'Home', th: 'หน้าแรก' },
         tools: { en: 'Tools', th: 'เครื่องมือ' },
+        statistics: { en: 'Statistics', th: 'สถิติ' },
         learn: { en: 'Learn', th: 'เรียนฟรี' },
         contact: { en: 'Contact', th: 'ติดต่อ' },
         joinCommunity: { en: 'Join Community', th: 'เข้าร่วมชุมชน' },
     },
+
 
     // Hero Section
     hero: {

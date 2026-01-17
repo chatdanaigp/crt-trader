@@ -46,7 +46,7 @@ export default function PerformanceChart() {
     const [availableMonths, setAvailableMonths] = useState([]);
     const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
 
-    // Fetch trading stats from API
+    // Fetch trading stats from API (Google Sheets only)
     const fetchStats = async (monthKey) => {
         setLoading(true);
         setError(null);
@@ -71,7 +71,7 @@ export default function PerformanceChart() {
         }
     };
 
-    // Initial fetch - get current month (January 2026)
+    // Initial fetch
     useEffect(() => {
         fetchStats('มกราคม2026');
     }, []);
@@ -95,7 +95,7 @@ export default function PerformanceChart() {
     const canGoPrev = currentMonthIndex < availableMonths.length - 1;
     const canGoNext = currentMonthIndex > 0;
 
-    // Use daily data directly from API (already has cumulative growth calculated)
+    // Use daily data directly from API
     const chartData = data?.dailyData || [];
 
     return (
@@ -268,8 +268,8 @@ export default function PerformanceChart() {
                             {/* Statistics Grid */}
                             {data.summary.totalTrades > 0 ? (
                                 <div className="grid grid-cols-2 gap-3">
-                                    {/* Portfolio Growth */}
-                                    <div className="glass rounded-xl p-4 text-center">
+                                    {/* Primary Metric: Growth or Points */}
+                                    <div className="glass rounded-xl p-4 text-center border-b-2 border-primary/20">
                                         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center mx-auto mb-2">
                                             <TrendingUp className="w-5 h-5 text-primary" />
                                         </div>
@@ -278,6 +278,19 @@ export default function PerformanceChart() {
                                         </p>
                                         <p className="text-text-secondary text-xs">
                                             {language === 'th' ? 'การเติบโต' : 'Growth'}
+                                        </p>
+                                    </div>
+
+                                    {/* Win Rate */}
+                                    <div className="glass rounded-xl p-4 text-center border-b-2 border-accent/20">
+                                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent/20 to-primary/10 flex items-center justify-center mx-auto mb-2">
+                                            <Target className="w-5 h-5 text-accent" />
+                                        </div>
+                                        <p className="text-xl sm:text-2xl font-bold text-accent">
+                                            {data.summary.winRate}%
+                                        </p>
+                                        <p className="text-text-secondary text-xs">
+                                            {language === 'th' ? 'อัตราชนะ' : 'Win Rate'}
                                         </p>
                                     </div>
 
@@ -291,19 +304,6 @@ export default function PerformanceChart() {
                                         </p>
                                         <p className="text-text-secondary text-xs">
                                             {language === 'th' ? 'กำไรรวม' : 'Total Profit'}
-                                        </p>
-                                    </div>
-
-                                    {/* Win Rate */}
-                                    <div className="glass rounded-xl p-4 text-center">
-                                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent/20 to-primary/10 flex items-center justify-center mx-auto mb-2">
-                                            <Target className="w-5 h-5 text-accent" />
-                                        </div>
-                                        <p className="text-xl sm:text-2xl font-bold text-accent">
-                                            {data.summary.winRate}%
-                                        </p>
-                                        <p className="text-text-secondary text-xs">
-                                            {language === 'th' ? 'อัตราชนะ' : 'Win Rate'}
                                         </p>
                                     </div>
 
@@ -330,17 +330,6 @@ export default function PerformanceChart() {
                                     </p>
                                     <p className="text-text-secondary text-sm">
                                         {language === 'th' ? 'เลือกดูเดือนอื่น' : 'Select another month'}
-                                    </p>
-                                </div>
-                            )}
-
-                            {/* Total Trades Badge */}
-                            {data.summary.totalTrades > 0 && (
-                                <div className="glass rounded-xl p-3 text-center">
-                                    <p className="text-text-secondary text-sm">
-                                        {language === 'th' ? 'จำนวนเทรดทั้งหมด' : 'Total Trades'}:
-                                        <span className="text-white font-semibold ml-2">{data.summary.totalTrades}</span>
-                                        <span className="text-text-secondary ml-1">{language === 'th' ? 'ออเดอร์' : 'orders'}</span>
                                     </p>
                                 </div>
                             )}
