@@ -16,6 +16,23 @@
   --text-secondary: #9CA3AF;
 }
 
+/* Light Mode - Apple-inspired clean aesthetic */
+[data-theme="light"] {
+  --background: #FFFFFF;
+  --foreground: #1D1D1F;
+  --primary: #6366F1;
+  --primary-light: #818CF8;
+  --primary-dark: #4F46E5;
+  --accent: #8B5CF6;
+  --accent-light: #A78BFA;
+  --accent-dark: #7C3AED;
+  --green: #22C55E;
+  --green-light: #4ADE80;
+  --card-bg: #F5F5F7;
+  --card-border: #E5E5E7;
+  --text-secondary: #6E6E73;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -68,6 +85,12 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="light"] .glass {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* Primary gradient text */

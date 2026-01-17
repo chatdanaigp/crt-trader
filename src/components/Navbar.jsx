@@ -1,14 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, X, TrendingUp, Globe } from 'lucide-react';
+import { Menu, X, TrendingUp, Globe, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const { language, setLanguage, t } = useLanguage();
+    const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -45,7 +47,7 @@ export default function Navbar() {
                         </div>
                         <span className="text-2xl font-bold tracking-tight">
                             <span className="primary-gradient">crt</span>
-                            <span className="text-white">.trader</span>
+                            <span className="text-foreground">.trader</span>
                         </span>
                     </Link>
 
@@ -55,12 +57,25 @@ export default function Navbar() {
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="relative text-gray-300 hover:text-white transition-colors duration-300 text-sm font-medium group"
+                                className="relative text-text-secondary hover:text-foreground transition-colors duration-300 text-sm font-medium group"
                             >
                                 {link.name}
                                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                             </Link>
                         ))}
+
+                        {/* Theme Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="flex items-center justify-center w-9 h-9 rounded-lg glass hover:bg-white/10 dark:hover:bg-white/10 transition-all duration-300"
+                            aria-label="Toggle theme"
+                        >
+                            {theme === 'dark' ? (
+                                <Sun className="w-4 h-4 text-primary" />
+                            ) : (
+                                <Moon className="w-4 h-4 text-primary" />
+                            )}
+                        </button>
 
                         {/* Language Toggle */}
                         <button
@@ -68,7 +83,7 @@ export default function Navbar() {
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass hover:bg-white/10 transition-all duration-300 text-sm font-medium"
                         >
                             <Globe className="w-4 h-4 text-primary" />
-                            <span className="text-white">{language.toUpperCase()}</span>
+                            <span className="text-foreground">{language.toUpperCase()}</span>
                         </button>
 
                         <Link
@@ -80,19 +95,32 @@ export default function Navbar() {
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <div className="flex items-center gap-3 md:hidden">
+                    <div className="flex items-center gap-2 md:hidden">
+                        {/* Mobile Theme Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="flex items-center justify-center w-8 h-8 rounded-lg glass"
+                            aria-label="Toggle theme"
+                        >
+                            {theme === 'dark' ? (
+                                <Sun className="w-4 h-4 text-primary" />
+                            ) : (
+                                <Moon className="w-4 h-4 text-primary" />
+                            )}
+                        </button>
+
                         {/* Mobile Language Toggle */}
                         <button
                             onClick={toggleLanguage}
                             className="flex items-center gap-1 px-2 py-1 rounded-lg glass text-sm font-medium"
                         >
                             <Globe className="w-4 h-4 text-primary" />
-                            <span className="text-white">{language.toUpperCase()}</span>
+                            <span className="text-foreground">{language.toUpperCase()}</span>
                         </button>
 
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="p-2 text-white hover:text-primary transition-colors duration-300"
+                            className="p-2 text-foreground hover:text-primary transition-colors duration-300"
                         >
                             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>
@@ -101,7 +129,7 @@ export default function Navbar() {
 
                 {/* Mobile Navigation */}
                 <div
-                    className={`md:hidden transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-64 opacity-100 mt-4' : 'max-h-0 opacity-0'
+                    className={`md:hidden transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-80 opacity-100 mt-4' : 'max-h-0 opacity-0'
                         }`}
                 >
                     <div className="glass rounded-xl p-4 space-y-3">
@@ -110,7 +138,7 @@ export default function Navbar() {
                                 key={link.href}
                                 href={link.href}
                                 onClick={() => setIsOpen(false)}
-                                className="block text-gray-300 hover:text-primary transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-white/5"
+                                className="block text-text-secondary hover:text-primary transition-colors duration-300 py-2 px-4 rounded-lg hover:bg-foreground/5"
                             >
                                 {link.name}
                             </Link>
