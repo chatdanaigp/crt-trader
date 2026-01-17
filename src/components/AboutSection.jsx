@@ -68,12 +68,12 @@ export default function AboutSection() {
                                 className="group glass rounded-2xl p-6 transition-all duration-500 hover:scale-[1.02] hover:shadow-lg primary-glow-hover"
                             >
                                 <div className={`w-14 h-14 rounded-xl mb-4 flex items-center justify-center transition-all duration-300 ${isPrimary
-                                        ? 'bg-gradient-to-br from-primary-dark to-primary group-hover:shadow-lg group-hover:shadow-primary/30'
-                                        : 'bg-gradient-to-br from-accent-dark to-accent group-hover:shadow-lg group-hover:shadow-accent/30'
+                                    ? 'bg-gradient-to-br from-primary-dark to-primary group-hover:shadow-lg group-hover:shadow-primary/30'
+                                    : 'bg-gradient-to-br from-accent-dark to-accent group-hover:shadow-lg group-hover:shadow-accent/30'
                                     }`}>
                                     <IconComponent className="w-6 h-6 text-white" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">
+                                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                                     {offering.title}
                                 </h3>
                                 <p className="text-text-secondary text-sm leading-relaxed">
@@ -90,21 +90,21 @@ export default function AboutSection() {
                         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
                             <Shield className="w-8 h-8 text-primary" />
                         </div>
-                        <h4 className="text-lg font-semibold text-white mb-2">{t('about.riskManagement')}</h4>
+                        <h4 className="text-lg font-semibold text-foreground mb-2">{t('about.riskManagement')}</h4>
                         <p className="text-text-secondary text-sm">{t('about.riskManagementDesc')}</p>
                     </div>
                     <div className="text-center">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green/10 flex items-center justify-center">
                             <TrendingUp className="w-8 h-8 text-green" />
                         </div>
-                        <h4 className="text-lg font-semibold text-white mb-2">{t('about.consistentGrowth')}</h4>
+                        <h4 className="text-lg font-semibold text-foreground mb-2">{t('about.consistentGrowth')}</h4>
                         <p className="text-text-secondary text-sm">{t('about.consistentGrowthDesc')}</p>
                     </div>
                     <div className="text-center">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">
                             <Users className="w-8 h-8 text-accent" />
                         </div>
-                        <h4 className="text-lg font-semibold text-white mb-2">{t('about.strongCommunity')}</h4>
+                        <h4 className="text-lg font-semibold text-foreground mb-2">{t('about.strongCommunity')}</h4>
                         <p className="text-text-secondary text-sm">{t('about.strongCommunityDesc')}</p>
                     </div>
                 </div>

@@ -83,7 +83,7 @@ export default function FreeVideosPreview() {
                             </div>
                             {/* Title */}
                             <div className="p-4">
-                                <h3 className="text-white font-semibold group-hover:text-primary transition-colors line-clamp-2">
+                                <h3 className="text-foreground font-semibold group-hover:text-primary transition-colors line-clamp-2">
                                     {video.title[language]}
                                 </h3>
                             </div>

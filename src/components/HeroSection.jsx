@@ -30,7 +30,7 @@ export default function HeroSection() {
                     {/* Main Headline */}
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                         <span className="primary-gradient">{t('hero.headline1')}</span>
-                        <span className="text-white">{t('hero.headline2')}</span>
+                        <span className="text-foreground">{t('hero.headline2')}</span>
                         <br />
                         <span className="primary-gradient">{t('hero.headline3')}</span>
                     </h1>
@@ -53,7 +53,7 @@ export default function HeroSection() {
                         </Link>
                         <Link
                             href="/purchase"
-                            className="inline-flex items-center gap-3 px-10 py-5 glass border border-primary/30 text-white font-bold text-lg rounded-xl transition-all duration-300 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 hover:scale-105 group"
+                            className="inline-flex items-center gap-3 px-10 py-5 glass border border-primary/30 text-foreground font-bold text-lg rounded-xl transition-all duration-300 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 hover:scale-105 group"
                         >
                             {t('hero.buyTools')}
                             <ShoppingCart className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
