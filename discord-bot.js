@@ -1,194 +1,282 @@
-const { Client, GatewayIntentBits } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config();
+/**
+ * Discord Bot for VIP Registration Automation
+ * Supports multiple roles: Starter, Trader, V.I.P.
+ * 
+ * Status mapping:
+ * - "Approved Starter" → Starter role
+ * - "Approved Trader" → Trader role  
+ * - "Approved V.I.P." → V.I.P. role
+ */
 
+require('dotenv').config();
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+
+// Configuration
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
+const GOOGLE_APPS_SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
+
+// Role IDs mapping
+const ROLE_IDS = {
+    starter: process.env.DISCORD_STARTER_ROLE_ID,
+    trader: process.env.DISCORD_TRADER_ROLE_ID,
+    vip: process.env.DISCORD_VIP_ROLE_ID,
+};
+
+// Status to Role mapping
+const STATUS_TO_ROLE = {
+    'approved starter': 'starter',
+    'approved trader': 'trader',
+    'approved v.i.p.': 'vip',
+    'approved vip': 'vip',
+};
+
+// Polling interval (in milliseconds)
+const POLL_INTERVAL = 30000; // 30 seconds
+
+// Keep track of processed rows
+const processedRows = new Set();
+
+// Initialize Discord Client
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.DirectMessages,
     ],
 });
 
-const TOKEN = process.env.DISCORD_TOKEN;
-
-// Multiple channels configuration
-const CHANNELS = [
-    {
-        id: process.env.DISCORD_CHANNEL_ID || '1323638619327664169',
-        name: 'smc-pro-tools-statistics',
-        dataFile: './src/data/discord-stats.json'
-    },
-    {
-        id: '1462025254057803777',
-        name: 'channel-1',
-        dataFile: './src/data/discord-stats-channel1.json'
-    },
-    {
-        id: '1462025305924571303',
-        name: 'channel-2',
-        dataFile: './src/data/discord-stats-channel2.json'
+// Fetch approved registrations from Google Apps Script
+async function fetchApprovedRegistrations() {
+    if (!GOOGLE_APPS_SCRIPT_URL) {
+        console.log('⚠️  GOOGLE_APPS_SCRIPT_URL not configured');
+        return [];
     }
-];
 
-// Function to parse the message format
-function parseTradingMessage(content) {
-    const lines = content.split('\n');
-    let currentDate = null;
-    const stats = [];
+    try {
+        const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=getApproved`);
+        const result = await response.json();
 
-    lines.forEach(line => {
-        // Match Date: 📍 12/1/2026
-        const dateMatch = line.match(/📍\s*(\d{1,2}\/\d{1,2}\/\d{4})/);
-        if (dateMatch) {
-            currentDate = dateMatch[1];
+        if (result.success) {
+            return result.data || [];
+        } else {
+            console.error('❌ Failed to fetch data:', result.error);
+            return [];
+        }
+    } catch (error) {
+        console.error('❌ Fetch error:', error.message);
+        return [];
+    }
+}
+
+// Update status in Google Sheets via Apps Script
+async function updateStatus(rowIndex, newStatus) {
+    try {
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'updateStatus',
+                rowIndex: rowIndex,
+                newStatus: newStatus
+            })
+        });
+
+        const result = await response.json();
+        return result.success;
+    } catch (error) {
+        console.error('❌ Update status error:', error.message);
+        return false;
+    }
+}
+
+// Get role name for welcome message
+function getRoleName(roleType) {
+    const names = {
+        starter: 'Starter',
+        trader: 'Trader',
+        vip: 'V.I.P.'
+    };
+    return names[roleType] || roleType;
+}
+
+// Send welcome DM to user
+async function sendWelcomeDM(user, userName, roleType) {
+    try {
+        const roleName = getRoleName(roleType);
+
+        const embed = new EmbedBuilder()
+            .setColor(roleType === 'vip' ? 0x9B59B6 : roleType === 'trader' ? 0x3498DB : 0x2ECC71)
+            .setTitle(`🎉 ยินดีต้อนรับสู่ ${roleName} Community!`)
+            .setDescription(`สวัสดีคุณ **${userName}**!\n\nการลงทะเบียนของคุณได้รับการอนุมัติแล้ว คุณได้รับ **${roleName}** Role เรียบร้อย`)
+            .addFields(
+                { name: '✨ สิทธิพิเศษ', value: `• เข้าถึงห้องสำหรับ ${roleName}\n• รับข่าวสารและอัพเดทล่าสุด\n• เข้าร่วมกลุ่มสนทนา ${roleName}`, inline: false }
+            )
+            .setFooter({ text: 'crt.trader | Registration System' })
+            .setTimestamp();
+
+        await user.send({ embeds: [embed] });
+        console.log(`   ✅ Sent welcome DM to ${user.tag}`);
+        return true;
+    } catch (error) {
+        console.error(`   ⚠️ Could not send DM to ${user.tag}:`, error.message);
+        return false;
+    }
+}
+
+// Assign role to user
+async function assignRole(guild, discordId, userName, roleType) {
+    const roleId = ROLE_IDS[roleType];
+
+    if (!roleId) {
+        console.log(`   ❌ Role ID for "${roleType}" not configured`);
+        return false;
+    }
+
+    try {
+        const member = await guild.members.fetch(discordId);
+
+        if (!member) {
+            console.log(`   ❌ Member ${discordId} not found in server`);
+            return false;
+        }
+
+        const role = guild.roles.cache.get(roleId);
+
+        if (!role) {
+            console.log(`   ❌ Role ${roleId} not found`);
+            return false;
+        }
+
+        // Check if member already has the role
+        if (member.roles.cache.has(roleId)) {
+            console.log(`   ℹ️ ${member.user.tag} already has ${getRoleName(roleType)} role`);
+            return true;
+        }
+
+        await member.roles.add(role);
+        console.log(`   ✅ Assigned ${getRoleName(roleType)} role to ${member.user.tag}`);
+
+        // Send welcome DM
+        await sendWelcomeDM(member.user, userName, roleType);
+
+        return true;
+    } catch (error) {
+        console.error(`   ❌ Failed to assign role to ${discordId}:`, error.message);
+        return false;
+    }
+}
+
+// Process approved registrations
+async function processApprovedRegistrations() {
+    try {
+        const approved = await fetchApprovedRegistrations();
+
+        if (approved.length === 0) {
             return;
         }
 
-        // Match Trade: ✅buy : +1,000 or ⭕️sell : -500
-        const tradeMatch = line.match(/^([^\w\s]+)\s*(buy|sell)\s*:\s*([+-]?[\d,]+)/i);
-        if (currentDate && tradeMatch) {
-            const emoji = tradeMatch[1].trim();
-            const isWin = emoji.includes('✅');
-            const type = tradeMatch[2].toLowerCase();
-            const points = parseInt(tradeMatch[3].replace(/,/g, ''));
+        console.log(`\n📋 Found ${approved.length} approved registration(s)`);
 
-            console.log(`📍 Parsed: ${currentDate} | ${emoji} ${type} | ${points} | Win: ${isWin}`);
+        const guild = client.guilds.cache.get(DISCORD_GUILD_ID);
 
-            stats.push({
-                date: currentDate,
-                type: type,
-                isWin: isWin,
-                points: points
-            });
-        }
-    });
-
-    return stats;
-}
-
-// Function to update JSON file for a specific channel
-function updateStatsFile(dataFile, newStats) {
-    const fullPath = path.resolve(__dirname, dataFile);
-    try {
-        // Ensure directory exists
-        const dir = path.dirname(fullPath);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
+        if (!guild) {
+            console.log('❌ Guild not found. Check DISCORD_GUILD_ID');
+            return;
         }
 
-        let currentData = [];
-        if (fs.existsSync(fullPath)) {
-            const fileContent = fs.readFileSync(fullPath, 'utf8');
-            currentData = JSON.parse(fileContent || '[]');
-        }
+        for (const registration of approved) {
+            const rowKey = `${registration.rowIndex}-${registration.connextId}`;
 
-        // Group by date
-        const groupedData = {};
-        currentData.forEach(day => {
-            groupedData[day.date] = day;
-        });
-
-        // Update with new data
-        newStats.forEach(stat => {
-            if (!groupedData[stat.date]) {
-                groupedData[stat.date] = {
-                    date: stat.date,
-                    trades: [],
-                    totalPoints: 0,
-                    wins: 0,
-                    losses: 0
-                };
+            // Skip if already processed in this session
+            if (processedRows.has(rowKey)) {
+                continue;
             }
 
-            const day = groupedData[stat.date];
-            day.trades.push({
-                type: stat.type,
-                isWin: stat.isWin,
-                points: stat.points
-            });
+            const status = (registration.status || '').toString().toLowerCase().trim();
+            const roleType = STATUS_TO_ROLE[status];
 
-            day.totalPoints += stat.points;
-            if (stat.isWin) day.wins++;
-            else day.losses++;
-        });
+            if (!roleType) {
+                console.log(`\n⚠️ Unknown status: "${registration.status}" for ${registration.name}`);
+                continue;
+            }
 
-        const finalData = Object.values(groupedData);
-        fs.writeFileSync(fullPath, JSON.stringify(finalData, null, 2));
-        console.log(`✅ Updated stats for ${newStats.length} entries in ${dataFile}`);
-    } catch (error) {
-        console.error(`❌ Error updating file ${dataFile}:`, error);
-    }
-}
+            console.log(`\n🔄 Processing: ${registration.name} ${registration.surname}`);
+            console.log(`   Discord ID: ${registration.discordId}`);
+            console.log(`   Status: ${registration.status} → ${getRoleName(roleType)} role`);
+            console.log(`   Row: ${registration.rowIndex}`);
 
-// Function to fetch and process history for a specific channel
-async function fetchChannelHistory(channelConfig) {
-    try {
-        const channel = await client.channels.fetch(channelConfig.id);
-        if (channel) {
-            console.log(`📜 Fetching history from #${channel.name || channelConfig.name}...`);
-            const messages = await channel.messages.fetch({ limit: 100 });
-            console.log(`📥 Found ${messages.size} messages in ${channelConfig.name}. Parsing...`);
+            if (!registration.discordId) {
+                console.log(`   ⚠️ No valid Discord ID found`);
+                continue;
+            }
 
-            let allParsedStats = [];
-            messages.forEach(msg => {
-                if (!msg.author.bot) {
-                    const stats = parseTradingMessage(msg.content);
-                    if (stats.length > 0) {
-                        allParsedStats = [...allParsedStats, ...stats];
-                    }
+            const success = await assignRole(
+                guild,
+                registration.discordId,
+                `${registration.name} ${registration.surname}`,
+                roleType
+            );
+
+            if (success) {
+                // Mark as processed in Google Sheets
+                const updated = await updateStatus(registration.rowIndex, `Done - ${getRoleName(roleType)}`);
+
+                if (updated) {
+                    console.log(`   ✅ Status updated to "Done - ${getRoleName(roleType)}"`);
                 }
-            });
 
-            if (allParsedStats.length > 0) {
-                // Clear existing and rebuild
-                const fullPath = path.resolve(__dirname, channelConfig.dataFile);
-                fs.writeFileSync(fullPath, JSON.stringify([], null, 2));
-                updateStatsFile(channelConfig.dataFile, allParsedStats);
-                console.log(`✅ Historical data populated for ${channelConfig.name}`);
-            } else {
-                // Create empty file if no data
-                const fullPath = path.resolve(__dirname, channelConfig.dataFile);
-                if (!fs.existsSync(fullPath)) {
-                    fs.writeFileSync(fullPath, JSON.stringify([], null, 2));
-                    console.log(`📄 Created empty data file for ${channelConfig.name}`);
-                }
+                processedRows.add(rowKey);
             }
         }
     } catch (error) {
-        console.error(`❌ Error fetching history for ${channelConfig.name}:`, error.message);
-        // Create empty file on error
-        const fullPath = path.resolve(__dirname, channelConfig.dataFile);
-        if (!fs.existsSync(fullPath)) {
-            fs.writeFileSync(fullPath, JSON.stringify([], null, 2));
-        }
+        console.error('❌ Error processing registrations:', error.message);
     }
 }
 
-client.once('ready', async () => {
-    console.log(`🤖 Bot is online as ${client.user.tag}`);
-    console.log(`📊 Monitoring ${CHANNELS.length} channels...`);
+// Bot ready event
+client.once('ready', () => {
+    console.log(`\n${'='.repeat(60)}`);
+    console.log(`🤖 Bot: ${client.user.tag}`);
+    console.log(`🏠 Guild: ${DISCORD_GUILD_ID}`);
+    console.log(`\n📋 Role Configuration:`);
+    console.log(`   Starter: ${ROLE_IDS.starter || '❌ NOT SET'}`);
+    console.log(`   Trader:  ${ROLE_IDS.trader || '❌ NOT SET'}`);
+    console.log(`   V.I.P.:  ${ROLE_IDS.vip || '❌ NOT SET'}`);
+    console.log(`\n🔗 Apps Script: ${GOOGLE_APPS_SCRIPT_URL ? 'Configured ✓' : 'NOT CONFIGURED ❌'}`);
+    console.log(`⏱️  Polling: Every ${POLL_INTERVAL / 1000}s`);
+    console.log(`${'='.repeat(60)}\n`);
 
-    // Fetch historical messages for all channels
-    for (const channelConfig of CHANNELS) {
-        await fetchChannelHistory(channelConfig);
-    }
+    // Initial check
+    processApprovedRegistrations();
+
+    // Set up polling interval
+    setInterval(processApprovedRegistrations, POLL_INTERVAL);
 });
 
-client.on('messageCreate', async (message) => {
-    if (message.author.bot) return;
-
-    // Check if this message is from any of our monitored channels
-    const channelConfig = CHANNELS.find(ch => ch.id === message.channelId);
-    if (!channelConfig) return;
-
-    console.log(`📩 Received message in ${channelConfig.name}: ${message.content.substring(0, 50)}...`);
-
-    const parsedStats = parseTradingMessage(message.content);
-    if (parsedStats.length > 0) {
-        updateStatsFile(channelConfig.dataFile, parsedStats);
-    }
+// Error handling
+client.on('error', (error) => {
+    console.error('Discord client error:', error);
 });
 
-client.login(TOKEN);
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled promise rejection:', error);
+});
+
+// Start the bot
+console.log('🚀 Starting Discord Bot...');
+
+if (!DISCORD_BOT_TOKEN) {
+    console.error('❌ DISCORD_BOT_TOKEN not found in .env');
+    process.exit(1);
+}
+
+if (!GOOGLE_APPS_SCRIPT_URL) {
+    console.error('❌ GOOGLE_APPS_SCRIPT_URL not found in .env');
+    process.exit(1);
+}
+
+client.login(DISCORD_BOT_TOKEN).catch((error) => {
+    console.error('❌ Failed to login:', error.message);
+    process.exit(1);
+});
