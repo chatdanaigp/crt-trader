@@ -21,8 +21,8 @@
    - **Branch:** `main`
    - **Root Directory:** `.` (เว้นว่างไว้ หรือใส่จุด)
    - **Runtime:** `Node`
-   - **Build Command:** `npm install && npm run build`  <-- **แก้ไข:** ต้องมี npm run build ด้วย
-   - **Start Command:** `npm start`  <-- **สำคัญ!** จะรันทั้ง Web และ Bot พร้อมกัน
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm run start:bot`  ← **รัน Discord Bot พร้อม Health Check**
    - **Instance Type:** `Free`
 
 4. **Environment Variables:** (กด Add Environment Variable)
