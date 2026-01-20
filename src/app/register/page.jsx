@@ -282,7 +282,7 @@ export default function RegisterPage() {
                             {/* Connext Client ID */}
                             <div>
                                 <label className="block text-sm font-medium text-white mb-2">
-                                    Connext Client ID <span className="text-red-400">*</span>
+                                    {language === 'th' ? 'Connext Client ID' : 'Connext Client ID'} <span className="text-red-400">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -313,28 +313,28 @@ export default function RegisterPage() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-white mb-2">
-                                        ชื่อ (Name) <span className="text-red-400">*</span>
+                                        {language === 'th' ? 'ชื่อ (Name)' : 'Name'} <span className="text-red-400">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         name="name"
                                         value={formData.name}
                                         onChange={handleInputChange}
-                                        placeholder="ชื่อจริง"
+                                        placeholder={language === 'th' ? 'ชื่อจริง' : 'First Name'}
                                         className="form-input"
                                         required
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-white mb-2">
-                                        นามสกุล (Surname) <span className="text-red-400">*</span>
+                                        {language === 'th' ? 'นามสกุล (Surname)' : 'Surname'} <span className="text-red-400">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         name="surname"
                                         value={formData.surname}
                                         onChange={handleInputChange}
-                                        placeholder="นามสกุล"
+                                        placeholder={language === 'th' ? 'นามสกุล' : 'Last Name'}
                                         className="form-input"
                                         required
                                     />
@@ -345,14 +345,14 @@ export default function RegisterPage() {
                             <div>
                                 <label className="block text-sm font-medium text-white mb-2">
                                     <MapPin className="w-4 h-4 inline mr-1" />
-                                    จังหวัด / ประเทศ <span className="text-red-400">*</span>
+                                    {language === 'th' ? 'จังหวัด / ประเทศ' : 'Province / Country'} <span className="text-red-400">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="provinceCountry"
                                     value={formData.provinceCountry}
                                     onChange={handleInputChange}
-                                    placeholder="เช่น กรุงเทพ / Thailand"
+                                    placeholder={language === 'th' ? 'เช่น กรุงเทพ / Thailand' : 'e.g. Bangkok / Thailand'}
                                     className="form-input"
                                     required
                                 />
@@ -362,7 +362,7 @@ export default function RegisterPage() {
                             <div>
                                 <label className="block text-sm font-medium text-white mb-2">
                                     <Phone className="w-4 h-4 inline mr-1" />
-                                    เบอร์โทรศัพท์ <span className="text-red-400">*</span>
+                                    {language === 'th' ? 'เบอร์โทรศัพท์' : 'Phone Number'} <span className="text-red-400">*</span>
                                 </label>
                                 <input
                                     type="tel"
@@ -378,7 +378,7 @@ export default function RegisterPage() {
                             {/* Platform */}
                             <div>
                                 <label className="block text-sm font-medium text-white mb-2">
-                                    ติดตามมาจากช่องทางใด? <span className="text-red-400">*</span>
+                                    {language === 'th' ? 'ติดตามมาจากช่องทางใด?' : 'Where did you follow us from?'} <span className="text-red-400">*</span>
                                 </label>
                                 <select
                                     name="platform"
@@ -387,7 +387,7 @@ export default function RegisterPage() {
                                     className="form-input"
                                     required
                                 >
-                                    <option value="">-- เลือกช่องทาง --</option>
+                                    <option value="">{language === 'th' ? '-- เลือกช่องทาง --' : '-- Select Platform --'}</option>
                                     {PLATFORMS.map(platform => (
                                         <option key={platform} value={platform}>{platform}</option>
                                     ))}
@@ -397,8 +397,8 @@ export default function RegisterPage() {
                             {/* Products Multi-select */}
                             <div>
                                 <label className="block text-sm font-medium text-white mb-3">
-                                    สินค้าที่คุณมี <span className="text-red-400">*</span>
-                                    <span className="text-text-secondary font-normal ml-2">(เลือกได้มากกว่า 1 รายการ)</span>
+                                    {language === 'th' ? 'สินค้าที่คุณมี' : 'Products you owned'} <span className="text-red-400">*</span>
+                                    <span className="text-text-secondary font-normal ml-2">({language === 'th' ? 'เลือกได้มากกว่า 1 รายการ' : 'Multiple selections allowed'})</span>
                                 </label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     {PRODUCTS.map(product => (
@@ -421,7 +421,7 @@ export default function RegisterPage() {
                             <div>
                                 <label className="block text-sm font-medium text-white mb-3">
                                     <Upload className="w-4 h-4 inline mr-1" />
-                                    หลักฐานการโอนเงิน <span className="text-red-400">*</span>
+                                    {language === 'th' ? 'หลักฐานการโอนเงิน' : 'Payment Slip'} <span className="text-red-400">*</span>
                                 </label>
                                 <div className={`file-upload ${formData.transferSlip ? 'has-file' : ''}`}>
                                     <input
@@ -442,8 +442,8 @@ export default function RegisterPage() {
                                     ) : (
                                         <div>
                                             <Upload className="w-10 h-10 text-text-secondary mx-auto mb-2" />
-                                            <p className="text-white font-medium">คลิกเพื่ออัพโหลดรูปภาพ</p>
-                                            <p className="text-text-secondary text-sm mt-1">PNG, JPG หรือ JPEG (สูงสุด 10MB)</p>
+                                            <p className="text-white font-medium">{language === 'th' ? 'คลิกเพื่ออัพโหลดรูปภาพ' : 'Click to upload image'}</p>
+                                            <p className="text-text-secondary text-sm mt-1">{language === 'th' ? 'PNG, JPG หรือ JPEG (สูงสุด 10MB)' : 'PNG, JPG or JPEG (Max 10MB)'}</p>
                                         </div>
                                     )}
                                 </div>
@@ -458,11 +458,11 @@ export default function RegisterPage() {
                                 {isLoading ? (
                                     <>
                                         <Loader2 className="w-5 h-5 animate-spin" />
-                                        กำลังส่งข้อมูล...
+                                        {language === 'th' ? 'กำลังส่งข้อมูล...' : 'Submitting...'}
                                     </>
                                 ) : (
                                     <>
-                                        ส่งข้อมูลลงทะเบียน
+                                        {language === 'th' ? 'ส่งข้อมูลลงทะเบียน' : 'Submit Registration'}
                                         <ExternalLink className="w-5 h-5" />
                                     </>
                                 )}
@@ -483,37 +483,39 @@ export default function RegisterPage() {
                         </h2>
 
                         <p className="text-text-secondary text-lg mb-6">
-                            ข้อมูลของคุณถูกส่งเรียบร้อยแล้ว<br />
-                            กรุณารอการอนุมัติจากแอดมิน
+                            {language === 'th' ? 'ข้อมูลของคุณถูกส่งเรียบร้อยแล้ว' : 'Your information has been submitted successfully'}<br />
+                            {language === 'th' ? 'กรุณารอการอนุมัติจากแอดมิน' : 'Please wait for admin approval'}
                         </p>
 
                         <div className="glass rounded-xl p-4 inline-flex items-center gap-3 mb-8">
                             <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
-                            <span className="text-yellow-500 font-medium">รอการตรวจสอบ</span>
+                            <span className="text-yellow-500 font-medium">{language === 'th' ? 'รอการตรวจสอบ' : 'Pending Review'}</span>
                         </div>
 
                         <div className="space-y-3 text-text-secondary text-sm max-w-md mx-auto mb-8">
                             <p className="flex items-start gap-2">
                                 <CheckCircle className="w-4 h-4 text-green flex-shrink-0 mt-0.5" />
-                                <span>แอดมินจะตรวจสอบหลักฐานการโอนเงินของคุณ</span>
+                                <span className="text-left">{language === 'th' ? 'แอดมินจะตรวจสอบหลักฐานการโอนเงินของคุณ' : 'Admin will verify your payment slip'}</span>
                             </p>
                             <p className="flex items-start gap-2">
                                 <CheckCircle className="w-4 h-4 text-green flex-shrink-0 mt-0.5" />
-                                <span>เมื่ออนุมัติ คุณจะได้รับ VIP Role บน Discord โดยอัตโนมัติ</span>
+                                <span className="text-left">{language === 'th' ? 'เมื่ออนุมัติ คุณจะได้รับ VIP Role บน Discord โดยอัตโนมัติ' : 'Once approved, you will automatically receive the VIP Role'}</span>
                             </p>
                             <p className="flex items-start gap-2">
                                 <CheckCircle className="w-4 h-4 text-green flex-shrink-0 mt-0.5" />
-                                <span>พร้อมรับข้อความต้อนรับทาง DM</span>
+                                <span className="text-left">{language === 'th' ? 'พร้อมรับข้อความต้อนรับทาง DM' : 'And receive a welcome message via DM'}</span>
                             </p>
                         </div>
                         <div className="pt-6 border-t border-white/10">
-                            <p className="text-white font-semibold mb-4 text-lg">⚡ ขั้นตอนถัดไป: เข้าร่วม Discord Server</p>
-                            <a href="https://discord.gg/vVr8BCUC" target="_blank" rel="noopener noreferrer" className="btn-discord inline-flex">
-                                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.36.698.772 1.362 1.225 1.993z" /></svg>
-                                เข้าร่วม Discord Server
+                            <p className="text-white font-semibold mb-4 text-lg">⚡ {language === 'th' ? 'ขั้นตอนถัดไป: เข้าร่วม Discord Server' : 'Next Step: Join Discord Server'}</p>
+                            <a href="https://discord.gg/vVr8BCUC" target="_blank" rel="noopener noreferrer" className="btn-discord inline-flex gap-2">
+                                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                                </svg>
+                                {language === 'th' ? 'เข้าร่วม Discord Server' : 'Join Discord Server'}
                                 <ExternalLink className="w-5 h-5" />
                             </a>
-                            <p className="text-text-secondary text-sm mt-3">คุณต้องเข้า Server ก่อน จึงจะได้รับ VIP Role เมื่ออนุมัติ</p>
+                            <p className="text-text-secondary text-sm mt-3">{language === 'th' ? 'คุณต้องเข้า Server ก่อน จึงจะได้รับ VIP Role เมื่ออนุมัติ' : 'You must join the server first to receive the VIP Role upon approval'}</p>
                         </div>
                     </div>
                 )}
