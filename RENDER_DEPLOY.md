@@ -22,7 +22,7 @@
    - **Root Directory:** `.` (เว้นว่างไว้ หรือใส่จุด)
    - **Runtime:** `Node`
    - **Build Command:** `npm install`
-   - **Start Command:** `node discord-bot.js`  <-- **สำคัญมาก!** ต้องเปลี่ยนเป็นอันนี้เพื่อรัน Bot แทนเว็บ
+   - **Start Command:** `npm start`  <-- **สำคัญ!** จะรันทั้ง Web และ Bot พร้อมกัน
    - **Instance Type:** `Free`
 
 4. **Environment Variables:** (กด Add Environment Variable)

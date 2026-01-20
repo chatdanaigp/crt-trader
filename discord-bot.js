@@ -264,18 +264,8 @@ process.on('unhandledRejection', (error) => {
 });
 
 // Start the bot
-// Health Check Server for Render / Fly.io
-const http = require('http');
-const port = process.env.PORT || 10000; // Render uses port 10000 by default
-
-const server = http.createServer((req, res) => {
-    res.writeHead(200);
-    res.end('Discord Bot is running!');
-});
-
-server.listen(port, '0.0.0.0', () => {
-    console.log(`Health check server listening on port ${port}`);
-});
+// Health Check is now handled by the Next.js app on port 3000 (or process.env.PORT)
+console.log('🚀 Starting Discord Bot service...');
 
 console.log('🚀 Starting Discord Bot...');
 
