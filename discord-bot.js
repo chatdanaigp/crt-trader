@@ -10,6 +10,30 @@
 
 require('dotenv').config();
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const http = require('http');
+
+// ============================================
+// Health Check HTTP Server for Render.com
+// ============================================
+const PORT = process.env.PORT || 10000;
+
+const healthCheckServer = http.createServer((req, res) => {
+    if (req.url === '/' || req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            status: 'ok',
+            service: 'discord-bot',
+            timestamp: new Date().toISOString()
+        }));
+    } else {
+        res.writeHead(404);
+        res.end('Not Found');
+    }
+});
+
+healthCheckServer.listen(PORT, () => {
+    console.log(`🌐 Health check server running on port ${PORT}`);
+});
 
 // Configuration
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
