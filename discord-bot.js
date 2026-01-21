@@ -14,15 +14,18 @@ const http = require('http');
 
 // ============================================
 // Health Check HTTP Server for Render.com
+// MUST START FIRST before Discord bot login
 // ============================================
 const PORT = process.env.PORT || 10000;
 
+// Create health check server immediately
 const healthCheckServer = http.createServer((req, res) => {
     if (req.url === '/' || req.url === '/health') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
             status: 'ok',
             service: 'discord-bot',
+            uptime: process.uptime(),
             timestamp: new Date().toISOString()
         }));
     } else {
@@ -31,8 +34,10 @@ const healthCheckServer = http.createServer((req, res) => {
     }
 });
 
-healthCheckServer.listen(PORT, () => {
-    console.log(`🌐 Health check server running on port ${PORT}`);
+// Start server IMMEDIATELY and synchronously wait
+healthCheckServer.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Health check server is READY on port ${PORT}`);
+    console.log(`🔗 Listening on http://0.0.0.0:${PORT}`);
 });
 
 // Configuration
