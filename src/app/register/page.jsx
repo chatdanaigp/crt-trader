@@ -16,7 +16,8 @@ import {
     Sparkles,
     AlertCircle,
     ArrowLeft,
-    Globe
+    Globe,
+    ChevronDown
 } from 'lucide-react';
 
 const DISCORD_CLIENT_ID = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
@@ -51,6 +52,7 @@ export default function RegisterPage() {
     const [discordUser, setDiscordUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isPlatformDropdownOpen, setIsPlatformDropdownOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         connextId: '',
@@ -80,6 +82,17 @@ export default function RegisterPage() {
             }
         }
     }, []);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isPlatformDropdownOpen && !event.target.closest('.platform-dropdown')) {
+                setIsPlatformDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isPlatformDropdownOpen]);
 
     const handleDiscordLogin = () => {
         const scope = 'identify';
@@ -376,22 +389,48 @@ export default function RegisterPage() {
                             </div>
 
                             {/* Platform */}
-                            <div>
+                            <div className="relative platform-dropdown">
                                 <label className="block text-sm font-medium text-white mb-2">
                                     {language === 'th' ? 'ติดตามมาจากช่องทางใด?' : 'Where did you follow us from?'} <span className="text-red-400">*</span>
                                 </label>
-                                <select
-                                    name="platform"
-                                    value={formData.platform}
-                                    onChange={handleInputChange}
-                                    className="form-input"
-                                    required
+                                <button
+                                    type="button"
+                                    onClick={() => setIsPlatformDropdownOpen(!isPlatformDropdownOpen)}
+                                    className="form-input w-full text-left flex items-center justify-between"
                                 >
-                                    <option value="">{language === 'th' ? '-- เลือกช่องทาง --' : '-- Select Platform --'}</option>
-                                    {PLATFORMS.map(platform => (
-                                        <option key={platform} value={platform}>{platform}</option>
-                                    ))}
-                                </select>
+                                    <span className={formData.platform ? 'text-white' : 'text-text-secondary'}>
+                                        {formData.platform || (language === 'th' ? '-- เลือกช่องทาง --' : '-- Select Platform --')}
+                                    </span>
+                                    <ChevronDown className={`w-5 h-5 text-text-secondary transition-transform ${isPlatformDropdownOpen ? 'rotate-180' : ''}`} />
+                                </button>
+                                {isPlatformDropdownOpen && (
+                                    <div className="absolute z-50 w-full mt-1 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl max-h-60 overflow-y-auto">
+                                        <div
+                                            onClick={() => {
+                                                handleInputChange({ target: { name: 'platform', value: '' } });
+                                                setIsPlatformDropdownOpen(false);
+                                            }}
+                                            className="px-4 py-3 text-text-secondary hover:bg-primary/20 hover:text-white cursor-pointer transition-colors"
+                                        >
+                                            {language === 'th' ? '-- เลือกช่องทาง --' : '-- Select Platform --'}
+                                        </div>
+                                        {PLATFORMS.map(platform => (
+                                            <div
+                                                key={platform}
+                                                onClick={() => {
+                                                    handleInputChange({ target: { name: 'platform', value: platform } });
+                                                    setIsPlatformDropdownOpen(false);
+                                                }}
+                                                className={`px-4 py-3 cursor-pointer transition-colors ${formData.platform === platform
+                                                    ? 'bg-primary text-white'
+                                                    : 'text-white hover:bg-primary/20'
+                                                    }`}
+                                            >
+                                                {platform}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Products Multi-select */}
