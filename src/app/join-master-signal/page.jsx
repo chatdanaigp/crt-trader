@@ -138,6 +138,19 @@ export default function JoinPage() {
                             </p>
                         </div>
 
+                        {/* Featured Image */}
+                        <div className="flex justify-center mb-12">
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ boxShadow: '0 20px 60px rgba(88, 101, 242, 0.3)' }}>
+                                <img 
+                                    src="/images/etc/ms.JPG" 
+                                    alt="Master Signal" 
+                                    className="w-full max-w-2xl h-auto rounded-2xl border-2"
+                                    style={{ borderColor: 'rgba(88, 101, 242, 0.4)' }}
+                                />
+                                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
+                            </div>
+                        </div>
+
                         {/* Discord Preview Card */}
                         <div className="glass rounded-3xl p-8 sm:p-10 mb-12 border-2" style={{ borderColor: 'rgba(88, 101, 242, 0.3)' }}>
                             <div className="flex flex-col md:flex-row items-center gap-8">
