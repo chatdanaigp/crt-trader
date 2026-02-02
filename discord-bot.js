@@ -318,10 +318,13 @@ async function assignRole(guild, discordId, userName, roleType, rowIndex) {
 
 // Process approved registrations
 async function processApprovedRegistrations() {
+    console.log(`\n🔄 [${new Date().toLocaleTimeString()}] Polling for approved registrations...`);
+
     try {
         const approved = await fetchApprovedRegistrations();
 
         if (approved.length === 0) {
+            console.log(`   ℹ️ No pending approved registrations found`);
             return;
         }
 
