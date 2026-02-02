@@ -6,7 +6,7 @@
  * - "Approved Starter" → Starter role
  * - "Approved Trader" → Trader role  
  * - "Approved V.I.P." → V.I.P. role
- * - "Approved Trial Access" → Trial Access role (with time limit)
+ * - "Approved Trial Access" → Trial Access role
  */
 
 require('dotenv').config();
@@ -45,10 +45,6 @@ healthCheckServer.listen(PORT, '0.0.0.0', () => {
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
 const GOOGLE_APPS_SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
-
-// Trial Access Configuration
-const TRIAL_DURATION_MS = 2 * 60 * 1000; // 2 minutes (for testing)
-const activeTrials = new Map(); // Track active trial users: discordId -> { timerId, userName, rowIndex }
 
 // Role IDs mapping
 const ROLE_IDS = {
@@ -137,118 +133,29 @@ function getRoleName(roleType) {
     return names[roleType] || roleType;
 }
 
-// Send trial welcome DM to user
-async function sendTrialWelcomeDM(user, userName, durationMinutes) {
-    try {
-        const embed = new EmbedBuilder()
-            .setColor(0xFFA500) // Orange for trial
-            .setTitle(`⏱️ ยินดีต้อนรับสู่ Trial Access!`)
-            .setDescription(`สวัสดีคุณ **${userName}**!\n\nคุณได้รับ **Trial Access** เรียบร้อยแล้ว`)
-            .addFields(
-                { name: '⏰ ระยะเวลาทดลองใช้งาน', value: `**${durationMinutes} นาที**`, inline: true },
-                { name: '⚠️ หมายเหตุ', value: 'เมื่อหมดเวลาทดลองใช้งาน คุณจะถูกนำออกจาก Server โดยอัตโนมัติ', inline: false }
-            )
-            .setFooter({ text: 'crt.trader | Trial Access System' })
-            .setTimestamp();
-
-        await user.send({ embeds: [embed] });
-        console.log(`   ✅ Sent trial welcome DM to ${user.tag}`);
-        return true;
-    } catch (error) {
-        console.error(`   ⚠️ Could not send trial DM to ${user.tag}:`, error.message);
-        return false;
-    }
-}
-
-// Send trial expiry notification
-async function sendTrialExpiryDM(user, userName) {
-    try {
-        const embed = new EmbedBuilder()
-            .setColor(0xFF0000) // Red for expiry
-            .setTitle(`⏱️ Trial Access หมดอายุแล้ว`)
-            .setDescription(`คุณ **${userName}**\n\nระยะเวลาทดลองใช้งานของคุณสิ้นสุดลงแล้ว คุณถูกนำออกจาก Server`)
-            .addFields(
-                { name: '🔓 ต้องการใช้งานต่อ?', value: 'หากต้องการสมัครสมาชิก กรุณาลงทะเบียนใหม่เพื่อรับสิทธิ์เต็มรูปแบบ', inline: false }
-            )
-            .setFooter({ text: 'crt.trader | Trial Access System' })
-            .setTimestamp();
-
-        await user.send({ embeds: [embed] });
-        console.log(`   ✅ Sent trial expiry DM to ${user.tag}`);
-        return true;
-    } catch (error) {
-        console.error(`   ⚠️ Could not send expiry DM:`, error.message);
-        return false;
-    }
-}
-
-// Start trial timer for user
-async function startTrialTimer(guild, discordId, userName, rowIndex) {
-    const durationMinutes = TRIAL_DURATION_MS / 60000;
-    console.log(`   ⏱️ Starting ${durationMinutes} minute trial timer for ${userName}`);
-
-    // Clear any existing timer for this user
-    if (activeTrials.has(discordId)) {
-        const existing = activeTrials.get(discordId);
-        clearTimeout(existing.timerId);
-        console.log(`   ℹ️ Cleared existing trial timer for ${userName}`);
-    }
-
-    // Set timer to kick user when trial expires
-    const timerId = setTimeout(async () => {
-        await kickTrialUser(guild, discordId, userName, rowIndex);
-    }, TRIAL_DURATION_MS);
-
-    // Track the trial
-    activeTrials.set(discordId, {
-        timerId: timerId,
-        userName: userName,
-        rowIndex: rowIndex,
-        startTime: Date.now()
-    });
-
-    return true;
-}
-
-// Kick trial user when time expires
-async function kickTrialUser(guild, discordId, userName, rowIndex) {
-    console.log(`\n⏱️ Trial expired for ${userName}`);
-
-    try {
-        const member = await guild.members.fetch(discordId).catch(() => null);
-
-        if (member) {
-            // Send DM before kicking
-            await sendTrialExpiryDM(member.user, userName);
-
-            // Kick the member
-            await member.kick('Trial Access period expired');
-            console.log(`   ✅ Kicked ${member.user.tag} - Trial expired`);
-        } else {
-            console.log(`   ℹ️ Member ${discordId} already left the server`);
-        }
-
-        // Update status in Google Sheets
-        const updated = await updateStatus(rowIndex, 'Done - Trial Access (Expired)');
-        if (updated) {
-            console.log(`   ✅ Status updated to "Done - Trial Access (Expired)"`);
-        }
-
-        // Remove from active trials
-        activeTrials.delete(discordId);
-
-    } catch (error) {
-        console.error(`   ❌ Failed to kick trial user ${discordId}:`, error.message);
-    }
-}
-
 // Send welcome DM to user
 async function sendWelcomeDM(user, userName, roleType) {
     try {
         const roleName = getRoleName(roleType);
 
+        // Choose color based on role type
+        let color;
+        switch (roleType) {
+            case 'vip':
+                color = 0x9B59B6; // Purple
+                break;
+            case 'trader':
+                color = 0x3498DB; // Blue
+                break;
+            case 'trial':
+                color = 0xFFA500; // Orange
+                break;
+            default:
+                color = 0x2ECC71; // Green (starter)
+        }
+
         const embed = new EmbedBuilder()
-            .setColor(roleType === 'vip' ? 0x9B59B6 : roleType === 'trader' ? 0x3498DB : 0x2ECC71)
+            .setColor(color)
             .setTitle(`🎉 ยินดีต้อนรับสู่ ${roleName} Community!`)
             .setDescription(`สวัสดีคุณ **${userName}**!\n\nการลงทะเบียนของคุณได้รับการอนุมัติแล้ว คุณได้รับ **${roleName}** Role เรียบร้อย`)
             .addFields(
@@ -299,15 +206,8 @@ async function assignRole(guild, discordId, userName, roleType, rowIndex) {
         await member.roles.add(role);
         console.log(`   ✅ Assigned ${getRoleName(roleType)} role to ${member.user.tag}`);
 
-        // Handle Trial Access differently
-        if (roleType === 'trial') {
-            const durationMinutes = TRIAL_DURATION_MS / 60000;
-            await sendTrialWelcomeDM(member.user, userName, durationMinutes);
-            await startTrialTimer(guild, discordId, userName, rowIndex);
-        } else {
-            // Send regular welcome DM
-            await sendWelcomeDM(member.user, userName, roleType);
-        }
+        // Send welcome DM
+        await sendWelcomeDM(member.user, userName, roleType);
 
         return true;
     } catch (error) {
@@ -372,19 +272,10 @@ async function processApprovedRegistrations() {
             );
 
             if (success) {
-                // For trial, status update happens when trial expires
-                // For other roles, update status immediately
-                if (roleType !== 'trial') {
-                    const updated = await updateStatus(registration.rowIndex, `Done - ${getRoleName(roleType)}`);
-                    if (updated) {
-                        console.log(`   ✅ Status updated to "Done - ${getRoleName(roleType)}"`);
-                    }
-                } else {
-                    // For trial, mark as active (not done yet)
-                    const updated = await updateStatus(registration.rowIndex, 'Trial Access Active');
-                    if (updated) {
-                        console.log(`   ✅ Status updated to "Trial Access Active"`);
-                    }
+                // Update status to Done for all roles
+                const updated = await updateStatus(registration.rowIndex, `Done - ${getRoleName(roleType)}`);
+                if (updated) {
+                    console.log(`   ✅ Status updated to "Done - ${getRoleName(roleType)}"`);
                 }
 
                 processedRows.add(rowKey);
@@ -405,7 +296,6 @@ client.once('ready', () => {
     console.log(`   Trader:  ${ROLE_IDS.trader || '❌ NOT SET'}`);
     console.log(`   V.I.P.:  ${ROLE_IDS.vip || '❌ NOT SET'}`);
     console.log(`   Trial:   ${ROLE_IDS.trial || '❌ NOT SET'}`);
-    console.log(`\n⏱️  Trial Duration: ${TRIAL_DURATION_MS / 60000} minutes`);
     console.log(`\n🔗 Apps Script: ${GOOGLE_APPS_SCRIPT_URL ? 'Configured ✓' : 'NOT CONFIGURED ❌'}`);
     console.log(`⏱️  Polling: Every ${POLL_INTERVAL / 1000}s`);
     console.log(`${'='.repeat(60)}\n`);
@@ -427,10 +317,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 // Start the bot
-// Health Check is now handled by the Next.js app on port 3000 (or process.env.PORT)
 console.log('🚀 Starting Discord Bot service...');
-
-console.log('🚀 Starting Discord Bot...');
 
 if (!DISCORD_BOT_TOKEN) {
     console.error('❌ DISCORD_BOT_TOKEN not found in .env');
