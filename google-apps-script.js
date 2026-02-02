@@ -1,6 +1,6 @@
 /**
  * Google Apps Script สำหรับระบบลงทะเบียน VIP
- * รองรับหลายสถานะ: Approved Starter, Approved Trader, Approved V.I.P.
+ * รองรับหลายสถานะ: Approved Starter, Approved Trader, Approved V.I.P., Approved Trial Access
  */
 
 const DRIVE_FOLDER_ID = '1y4yx-QnGunkU1NBBjjknrURCocaMi8L6';
@@ -10,7 +10,8 @@ const APPROVED_STATUSES = [
     'approved starter',
     'approved trader',
     'approved v.i.p.',
-    'approved vip'
+    'approved vip',
+    'approved trial access'
 ];
 
 function doPost(e) {
@@ -73,7 +74,7 @@ function doGet(e) {
             .createTextOutput(JSON.stringify({
                 status: 'ok',
                 message: 'VIP Registration API is running',
-                supportedStatuses: ['Approved Starter', 'Approved Trader', 'Approved V.I.P.'],
+                supportedStatuses: ['Approved Starter', 'Approved Trader', 'Approved V.I.P.', 'Approved Trial Access'],
                 timestamp: new Date().toISOString()
             }))
             .setMimeType(ContentService.MimeType.JSON);
